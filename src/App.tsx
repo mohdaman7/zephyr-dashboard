@@ -72,8 +72,39 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0d0d0e] text-neutral-100 font-sans antialiased selection:bg-amber-500 selection:text-neutral-950">
-      <Toaster position="top-right" theme="dark" richColors />
+    <div
+      className="min-h-screen font-sans antialiased selection:bg-blue-500/30 selection:text-blue-200"
+      style={{ backgroundColor: "#020817", color: "#E8F0FE" }}
+    >
+      {/* Ambient background glows */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div
+          className="absolute -top-40 -left-40 w-96 h-96 rounded-full blur-3xl opacity-20"
+          style={{ background: "radial-gradient(circle, #3B82F6 0%, transparent 70%)" }}
+        />
+        <div
+          className="absolute top-1/3 right-0 w-80 h-80 rounded-full blur-3xl opacity-10"
+          style={{ background: "radial-gradient(circle, #60A5FA 0%, transparent 70%)" }}
+        />
+        <div
+          className="absolute bottom-0 left-1/3 w-72 h-72 rounded-full blur-3xl opacity-10"
+          style={{ background: "radial-gradient(circle, #2563EB 0%, transparent 70%)" }}
+        />
+      </div>
+
+      <Toaster
+        position="top-right"
+        theme="dark"
+        richColors
+        toastOptions={{
+          style: {
+            background: "#080F1F",
+            border: "1px solid rgba(59,130,246,0.2)",
+            color: "#E8F0FE",
+            fontFamily: "Inter, sans-serif",
+          },
+        }}
+      />
 
       {/* Sidebar */}
       <Sidebar
@@ -88,7 +119,7 @@ export function App() {
       />
 
       {/* Main Area */}
-      <div className="lg:pl-72 flex flex-col min-h-screen">
+      <div className="lg:pl-72 flex flex-col min-h-screen relative z-10">
         <Header
           isConnected={isConnected}
           onRefresh={loadAllData}
