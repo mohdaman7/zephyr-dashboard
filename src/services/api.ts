@@ -1,6 +1,8 @@
 import type { ProjectItem, GalleryItem, VideoItem, ServiceItem, VideoResponse } from "../types";
 
-const API_BASE = "/api";
+// In dev: Vite proxy forwards /api → localhost:5000
+// In production: VITE_API_URL must be set to the deployed backend URL (e.g. https://zephyr-wl4j.onrender.com/api)
+const API_BASE = import.meta.env.VITE_API_URL ?? "/api";
 
 async function fetchJson<T>(url: string, options?: RequestInit): Promise<T | null> {
   try {
