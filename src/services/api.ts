@@ -1,6 +1,6 @@
 import type { ProjectItem, GalleryItem, VideoItem, ServiceItem, VideoResponse } from "../types";
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "/api";
 
 async function fetchJson<T>(url: string, options?: RequestInit): Promise<T | null> {
   try {

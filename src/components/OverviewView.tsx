@@ -4,12 +4,10 @@ import {
   Briefcase,
   Image as ImageIcon,
   Video,
-  Layers,
   Activity,
   ArrowUpRight,
   Plus,
   ShieldAlert,
-  TrendingUp,
 } from "lucide-react";
 import type { ProjectItem, GalleryItem, VideoItem, ServiceItem } from "../types";
 
@@ -38,7 +36,6 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
   projects,
   gallery,
   videos,
-  services,
   isConnected,
   onNavigate,
 }) => {

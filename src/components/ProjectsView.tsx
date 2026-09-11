@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Briefcase, Plus, Trash2, Edit3, Upload, Link as LinkIcon,
-  MapPin, X, RefreshCw, Calendar, Maximize2, User,
+  MapPin, X, RefreshCw, Calendar, Maximize2,
 } from "lucide-react";
 import type { ProjectItem } from "../types";
 import { createProject, updateProject, deleteProject, uploadMediaFile } from "../services/api";
