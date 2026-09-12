@@ -6,6 +6,7 @@ import {
 import type { GalleryItem } from "../types";
 import { createGalleryItem, updateGalleryItem, deleteGalleryItem, uploadMediaFile } from "../services/api";
 import { toast } from "sonner";
+import { getStoredCategories } from "./CategoriesView";
 
 interface GalleryViewProps {
   gallery: GalleryItem[];
@@ -13,7 +14,6 @@ interface GalleryViewProps {
   searchQuery: string;
 }
 
-const CATEGORIES = ["All", "Architecture", "Interiors", "Landscape", "Furniture & Detail"];
 
 const cardBase = {
   background: "rgba(8, 15, 31, 0.75)",
@@ -43,6 +43,8 @@ const labelStyle = {
 };
 
 export const GalleryView: React.FC<GalleryViewProps> = ({ gallery, onRefresh, searchQuery }) => {
+  const dynamicCategories = getStoredCategories();
+  const CATEGORIES = ["All", ...dynamicCategories];
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<GalleryItem | null>(null);
@@ -313,10 +315,9 @@ export const GalleryView: React.FC<GalleryViewProps> = ({ gallery, onRefresh, se
                     <label style={labelStyle}>Category Tag</label>
                     <select value={category} onChange={(e) => setCategory(e.target.value)}
                       style={{ ...inputStyle, cursor: "pointer" }} onFocus={focusInput} onBlur={blurInput}>
-                      <option value="Architecture">Architecture</option>
-                      <option value="Interiors">Interiors</option>
-                      <option value="Landscape">Landscape</option>
-                      <option value="Furniture & Detail">Furniture &amp; Detail</option>
+                      {dynamicCategories.map((cat) => (
+                        <option key={cat} value={cat}>{cat}</option>
+                      ))}
                     </select>
                   </div>
                   <div>

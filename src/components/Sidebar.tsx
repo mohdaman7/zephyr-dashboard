@@ -5,10 +5,12 @@ import {
   Image as ImageIcon,
   Video,
   Layers,
+  Tag,
   ExternalLink,
   ShieldCheck,
   Zap,
   ChevronRight,
+  LogOut,
 } from "lucide-react";
 import type { ProjectItem, GalleryItem, VideoItem, ServiceItem } from "../types";
 
@@ -21,6 +23,7 @@ interface SidebarProps {
   services: ServiceItem[];
   isMobileOpen: boolean;
   setIsMobileOpen: (open: boolean) => void;
+  onLogout: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -32,6 +35,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   services,
   isMobileOpen,
   setIsMobileOpen,
+  onLogout,
 }) => {
   const navItems = [
     { id: "overview", label: "Executive Overview", icon: LayoutDashboard },
@@ -39,6 +43,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: "gallery", label: "Gallery Showcase", icon: ImageIcon, badge: `${gallery.length}` },
     { id: "videos", label: "Video Showcase", icon: Video, badge: `${videos.length}/3` },
     { id: "services", label: "Services Catalog", icon: Layers, badge: `${services.length}` },
+    { id: "categories", label: "Categories", icon: Tag },
   ];
 
   return (
@@ -222,6 +227,30 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <span>View Public Website</span>
               <ExternalLink className="h-3.5 w-3.5 opacity-60" />
             </a>
+
+            {/* Logout */}
+            <button
+              onClick={onLogout}
+              className="flex items-center justify-between w-full rounded-xl px-3.5 py-2.5 text-xs font-medium transition-all duration-200"
+              style={{
+                background: "rgba(13, 22, 39, 0.6)",
+                border: "1px solid rgba(239, 68, 68, 0.15)",
+                color: "rgba(248, 113, 113, 0.7)",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.background = "rgba(220, 38, 38, 0.1)";
+                (e.currentTarget as HTMLElement).style.border = "1px solid rgba(239, 68, 68, 0.4)";
+                (e.currentTarget as HTMLElement).style.color = "#FCA5A5";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.background = "rgba(13, 22, 39, 0.6)";
+                (e.currentTarget as HTMLElement).style.border = "1px solid rgba(239, 68, 68, 0.15)";
+                (e.currentTarget as HTMLElement).style.color = "rgba(248, 113, 113, 0.7)";
+              }}
+            >
+              <span>Sign Out</span>
+              <LogOut className="h-3.5 w-3.5 opacity-70" />
+            </button>
           </div>
         </div>
       </aside>

@@ -6,6 +6,8 @@ import { ProjectsView } from "./components/ProjectsView";
 import { GalleryView } from "./components/GalleryView";
 import { VideosView } from "./components/VideosView";
 import { ServicesView } from "./components/ServicesView";
+import { CategoriesView } from "./components/CategoriesView";
+import { LoginPage } from "./components/LoginPage";
 import type { ProjectItem, GalleryItem, VideoItem, ServiceItem } from "./types";
 import {
   fetchProjects,
@@ -17,6 +19,10 @@ import {
 import { Toaster, toast } from "sonner";
 
 export function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return localStorage.getItem("zephyr_auth") === "true";
+  });
+
   const [activeTab, setActiveTab] = useState<string>("overview");
   const [isMobileOpen, setIsMobileOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -49,8 +55,10 @@ export function App() {
   };
 
   useEffect(() => {
-    loadAllData();
-  }, []);
+    if (isAuthenticated) {
+      loadAllData();
+    }
+  }, [isAuthenticated]);
 
   const handleExportBackup = () => {
     const backupData = {
@@ -70,6 +78,35 @@ export function App() {
     URL.revokeObjectURL(url);
     toast.success("System backup JSON exported!");
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem("zephyr_auth");
+    setIsAuthenticated(false);
+    setActiveTab("overview");
+    toast.success("Logged out successfully.");
+  };
+
+  // Show login screen if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <>
+        <Toaster
+          position="top-right"
+          theme="dark"
+          richColors
+          toastOptions={{
+            style: {
+              background: "#080F1F",
+              border: "1px solid rgba(59,130,246,0.2)",
+              color: "#E8F0FE",
+              fontFamily: "Inter, sans-serif",
+            },
+          }}
+        />
+        <LoginPage onLogin={() => setIsAuthenticated(true)} />
+      </>
+    );
+  }
 
   return (
     <div
@@ -116,6 +153,7 @@ export function App() {
         services={services}
         isMobileOpen={isMobileOpen}
         setIsMobileOpen={setIsMobileOpen}
+        onLogout={handleLogout}
       />
 
       {/* Main Area */}
@@ -173,6 +211,10 @@ export function App() {
               onRefresh={loadAllData}
               searchQuery={searchQuery}
             />
+          )}
+
+          {activeTab === "categories" && (
+            <CategoriesView />
           )}
         </main>
       </div>

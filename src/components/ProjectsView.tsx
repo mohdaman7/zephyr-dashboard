@@ -7,6 +7,7 @@ import {
 import type { ProjectItem } from "../types";
 import { createProject, updateProject, deleteProject, uploadMediaFile } from "../services/api";
 import { toast } from "sonner";
+import { getStoredCategories } from "./CategoriesView";
 
 interface ProjectsViewProps {
   projects: ProjectItem[];
@@ -14,7 +15,6 @@ interface ProjectsViewProps {
   searchQuery: string;
 }
 
-const CATEGORIES = ["All", "Residential", "Commercial", "Interior", "Landscape"];
 
 // Shared style tokens
 const cardBase = {
@@ -45,6 +45,8 @@ const labelStyle = {
 };
 
 export const ProjectsView: React.FC<ProjectsViewProps> = ({ projects, onRefresh, searchQuery }) => {
+  const dynamicCategories = getStoredCategories();
+  const CATEGORIES = ["All", ...dynamicCategories];
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<ProjectItem | null>(null);
@@ -346,10 +348,9 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ projects, onRefresh,
                       <label style={labelStyle}>Category</label>
                       <select value={category} onChange={(e) => setCategory(e.target.value)}
                         style={{ ...inputStyle, cursor: "pointer" }} onFocus={focusInput} onBlur={blurInput}>
-                        <option value="Residential">Residential</option>
-                        <option value="Commercial">Commercial</option>
-                        <option value="Interior">Interior</option>
-                        <option value="Landscape">Landscape</option>
+                        {dynamicCategories.map((cat) => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
                       </select>
                     </div>
                     <div>
