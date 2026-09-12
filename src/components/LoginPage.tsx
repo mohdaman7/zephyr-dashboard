@@ -158,15 +158,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
               <img
                 src="/log.png"
                 alt="Zephyr Logo"
-                className="h-14 w-auto max-w-[220px] object-contain brightness-110 drop-shadow-[0_0_25px_rgba(59,130,246,0.4)]"
+                className="h-16 w-auto max-w-[240px] object-contain brightness-110 drop-shadow-[0_0_25px_rgba(59,130,246,0.4)]"
               />
             </div>
-            <span
-              className="text-[10px] uppercase tracking-widest font-medium"
-              style={{ color: "rgba(96, 165, 250, 0.7)", fontFamily: "'JetBrains Mono', monospace" }}
-            >
-              Executive Studio · Admin Portal
-            </span>
           </div>
 
           {/* Divider */}
@@ -341,7 +335,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
             >
               <Lock className="h-3 w-3" style={{ color: "rgba(96, 165, 250, 0.6)" }} />
               <span className="text-[10px]" style={{ color: "rgba(100, 116, 139, 0.7)", fontFamily: "'JetBrains Mono', monospace" }}>
-                Secure Admin Access · Zephyr Executive Studio
+                Secure Admin Access · Zephyr
               </span>
             </div>
           </div>

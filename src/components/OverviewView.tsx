@@ -120,20 +120,6 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <div
-              className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium mb-4"
-              style={{
-                background: "rgba(59, 130, 246, 0.1)",
-                border: "1px solid rgba(59, 130, 246, 0.25)",
-                color: "#93C5FD",
-              }}
-            >
-              <span
-                className="h-1.5 w-1.5 rounded-full animate-pulse"
-                style={{ background: "#3B82F6" }}
-              />
-              Zephyr Executive Studio
-            </div>
             <h1
               className="text-3xl md:text-4xl font-normal text-white tracking-wide"
               style={{ fontFamily: "'DM Serif Display', serif" }}

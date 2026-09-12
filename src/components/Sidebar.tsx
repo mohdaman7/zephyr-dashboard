@@ -78,17 +78,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <img
                 src="/log.png"
                 alt="Zephyr Architecture Logo"
-                className="h-10 w-auto max-w-[180px] object-contain brightness-110"
+                className="h-14 w-auto max-w-[220px] object-contain brightness-110"
               />
-            </div>
-            <div className="flex items-center gap-1.5 pl-0.5">
-              <span
-                className="text-[10px] uppercase tracking-widest font-semibold"
-                style={{ color: "rgba(96, 165, 250, 0.8)", fontFamily: "'JetBrains Mono', monospace" }}
-              >
-                Executive Studio
-              </span>
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
             </div>
           </div>
 
