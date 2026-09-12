@@ -78,7 +78,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <img
                 src="/log.png"
                 alt="Zephyr Architecture Logo"
-                className="h-14 w-auto max-w-[220px] object-contain brightness-110"
+                className="h-auto max-h-20 w-full max-w-none object-contain object-left brightness-110"
               />
             </div>
           </div>
