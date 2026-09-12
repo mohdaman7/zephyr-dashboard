@@ -154,38 +154,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
 
           {/* Brand */}
           <div className="flex flex-col items-center mb-8">
-            <div className="relative mb-4">
-              <div
-                className="flex h-16 w-16 items-center justify-center rounded-2xl font-bold text-white text-2xl shadow-2xl relative overflow-hidden"
-                style={{
-                  background: "linear-gradient(135deg, #1D4ED8 0%, #2563EB 40%, #3B82F6 100%)",
-                  boxShadow: "0 0 40px rgba(59, 130, 246, 0.5), inset 0 1px 0 rgba(255,255,255,0.15)",
-                }}
-              >
-                <span className="relative z-10" style={{ fontFamily: "'DM Serif Display', serif" }}>Z</span>
-                <div
-                  className="absolute inset-0 opacity-30"
-                  style={{ background: "radial-gradient(circle at 30% 30%, white, transparent)" }}
-                />
-              </div>
-              {/* Orbit ring */}
-              <div
-                className="absolute -inset-2 rounded-3xl"
-                style={{
-                  border: "1px solid rgba(59, 130, 246, 0.25)",
-                  borderRadius: "18px",
-                }}
+            <div className="mb-4">
+              <img
+                src="/log.png"
+                alt="Zephyr Logo"
+                className="h-14 w-auto max-w-[220px] object-contain brightness-110 drop-shadow-[0_0_25px_rgba(59,130,246,0.4)]"
               />
-            </div>
-
-            <div className="flex items-center gap-2 mb-1">
-              <span
-                className="text-white text-2xl font-semibold tracking-widest"
-                style={{ fontFamily: "'DM Serif Display', serif", letterSpacing: "0.18em" }}
-              >
-                ZEPHYR
-              </span>
-              <Zap className="h-4 w-4" style={{ color: "#60A5FA" }} />
             </div>
             <span
               className="text-[10px] uppercase tracking-widest font-medium"

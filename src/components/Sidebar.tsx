@@ -73,33 +73,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         <div className="flex flex-col h-full p-5 overflow-y-auto">
           {/* Brand Header */}
-          <div className="flex items-center gap-3 px-1 py-3 mb-6">
-            <div
-              className="flex h-10 w-10 items-center justify-center rounded-xl font-bold text-white text-lg shadow-lg relative overflow-hidden"
-              style={{
-                background: "linear-gradient(135deg, #2563EB 0%, #3B82F6 50%, #60A5FA 100%)",
-                boxShadow: "0 0 20px rgba(59, 130, 246, 0.4)",
-              }}
-            >
-              <span className="relative z-10" style={{ fontFamily: "'DM Serif Display', serif" }}>Z</span>
-              <div className="absolute inset-0 opacity-30" style={{ background: "radial-gradient(circle at 30% 30%, white, transparent)" }} />
+          <div className="flex flex-col gap-2 px-1 py-2 mb-6">
+            <div className="flex items-center">
+              <img
+                src="/log.png"
+                alt="Zephyr Architecture Logo"
+                className="h-10 w-auto max-w-[180px] object-contain brightness-110"
+              />
             </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span
-                  className="text-white text-lg font-semibold tracking-widest"
-                  style={{ fontFamily: "'DM Serif Display', serif", letterSpacing: "0.15em" }}
-                >
-                  ZEPHYR
-                </span>
-                <Zap className="h-3.5 w-3.5" style={{ color: "#60A5FA" }} />
-              </div>
+            <div className="flex items-center gap-1.5 pl-0.5">
               <span
-                className="text-[10px] uppercase tracking-widest font-medium"
-                style={{ color: "rgba(96, 165, 250, 0.7)", fontFamily: "'JetBrains Mono', monospace" }}
+                className="text-[10px] uppercase tracking-widest font-semibold"
+                style={{ color: "rgba(96, 165, 250, 0.8)", fontFamily: "'JetBrains Mono', monospace" }}
               >
                 Executive Studio
               </span>
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
             </div>
           </div>
 
@@ -206,7 +195,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
 
             <a
-              href="http://localhost:5173"
+              href="https://zephyr-steel-six.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-between w-full rounded-xl px-3.5 py-2.5 text-xs font-medium transition-all duration-200"
