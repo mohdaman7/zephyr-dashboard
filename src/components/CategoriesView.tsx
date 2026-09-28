@@ -48,8 +48,16 @@ const inputStyle: React.CSSProperties = {
   transition: "border-color 0.2s, box-shadow 0.2s",
 };
 
-export const CategoriesView: React.FC = () => {
-  const [categories, setCategories] = useState<string[]>(getStoredCategories);
+interface CategoriesViewProps {
+  categories?: string[];
+  onCategoriesChange?: (cats: string[]) => void;
+}
+
+export const CategoriesView: React.FC<CategoriesViewProps> = ({
+  categories: propCategories,
+  onCategoriesChange,
+}) => {
+  const [categories, setCategories] = useState<string[]>(() => propCategories || getStoredCategories());
   const [newCat, setNewCat] = useState("");
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editValue, setEditValue] = useState("");
@@ -57,10 +65,17 @@ export const CategoriesView: React.FC = () => {
   const [newInputFocused, setNewInputFocused] = useState(false);
 
   useEffect(() => {
+    if (propCategories && propCategories.length > 0) {
+      setCategories(propCategories);
+    }
+  }, [propCategories]);
+
+  useEffect(() => {
     fetchCategories().then((serverCats) => {
       if (serverCats && serverCats.length > 0) {
         setCategories(serverCats);
         saveCategories(serverCats);
+        if (onCategoriesChange) onCategoriesChange(serverCats);
       }
     });
   }, []);
@@ -68,6 +83,7 @@ export const CategoriesView: React.FC = () => {
   const persist = async (updated: string[]) => {
     setCategories(updated);
     saveCategories(updated);
+    if (onCategoriesChange) onCategoriesChange(updated);
   };
 
   const handleAdd = async () => {

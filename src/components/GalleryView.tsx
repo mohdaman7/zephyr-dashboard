@@ -7,9 +7,11 @@ import type { GalleryItem } from "../types";
 import { createGalleryItem, updateGalleryItem, deleteGalleryItem, uploadMediaFile } from "../services/api";
 import { toast } from "sonner";
 import { getStoredCategories } from "./CategoriesView";
+import { PremiumCategorySelect } from "./PremiumCategorySelect";
 
 interface GalleryViewProps {
   gallery: GalleryItem[];
+  categories?: string[];
   onRefresh: () => void;
   searchQuery: string;
 }
@@ -42,8 +44,15 @@ const labelStyle = {
   letterSpacing: "0.05em",
 };
 
-export const GalleryView: React.FC<GalleryViewProps> = ({ gallery, onRefresh, searchQuery }) => {
-  const dynamicCategories = getStoredCategories();
+export const GalleryView: React.FC<GalleryViewProps> = ({ gallery, categories: propCategories, onRefresh, searchQuery }) => {
+  const [addedCats, setAddedCats] = useState<string[]>([]);
+  const dynamicCategories = Array.from(
+    new Set([
+      ...(propCategories || getStoredCategories()),
+      ...addedCats,
+      ...gallery.map((g) => g.category).filter(Boolean),
+    ])
+  );
   const CATEGORIES = ["All", ...dynamicCategories];
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -51,7 +60,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({ gallery, onRefresh, se
   const [lightboxImage, setLightboxImage] = useState<GalleryItem | null>(null);
 
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("Architecture");
+  const [category, setCategory] = useState(() => dynamicCategories[0] || "Architecture");
   const [imageMode, setImageMode] = useState<"url" | "file">("url");
   const [imageUrl, setImageUrl] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -312,13 +321,15 @@ export const GalleryView: React.FC<GalleryViewProps> = ({ gallery, onRefresh, se
                       style={inputStyle} onFocus={focusInput} onBlur={blurInput} />
                   </div>
                   <div>
-                    <label style={labelStyle}>Category Tag</label>
-                    <select value={category} onChange={(e) => setCategory(e.target.value)}
-                      style={{ ...inputStyle, cursor: "pointer" }} onFocus={focusInput} onBlur={blurInput}>
-                      {dynamicCategories.map((cat) => (
-                        <option key={cat} value={cat}>{cat}</option>
-                      ))}
-                    </select>
+                    <PremiumCategorySelect
+                      label="Category Tag"
+                      categories={dynamicCategories}
+                      selectedCategory={category}
+                      onSelectCategory={setCategory}
+                      onAddNewCategory={(newCat) => {
+                        setAddedCats((prev) => Array.from(new Set([...prev, newCat])));
+                      }}
+                    />
                   </div>
                   <div>
                     <label style={labelStyle}>Caption / Description</label>

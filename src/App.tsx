@@ -6,7 +6,7 @@ import { ProjectsView } from "./components/ProjectsView";
 import { GalleryView } from "./components/GalleryView";
 import { VideosView } from "./components/VideosView";
 import { ServicesView } from "./components/ServicesView";
-import { CategoriesView } from "./components/CategoriesView";
+import { CategoriesView, getStoredCategories } from "./components/CategoriesView";
 import { LoginPage } from "./components/LoginPage";
 import type { ProjectItem, GalleryItem, VideoItem, ServiceItem } from "./types";
 import {
@@ -14,6 +14,7 @@ import {
   fetchGallery,
   fetchVideos,
   fetchServices,
+  fetchCategories,
   checkBackendHealth,
 } from "./services/api";
 import { Toaster, toast } from "sonner";
@@ -32,6 +33,7 @@ export function App() {
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const [videos, setVideos] = useState<VideoItem[]>([]);
   const [services, setServices] = useState<ServiceItem[]>([]);
+  const [categories, setCategories] = useState<string[]>(getStoredCategories);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -40,17 +42,21 @@ export function App() {
     const health = await checkBackendHealth();
     setIsConnected(health);
 
-    const [pList, gList, vList, sList] = await Promise.all([
+    const [pList, gList, vList, sList, cList] = await Promise.all([
       fetchProjects(),
       fetchGallery(),
       fetchVideos(),
       fetchServices(),
+      fetchCategories(),
     ]);
 
     setProjects(pList);
     setGallery(gList);
     setVideos(vList);
     setServices(sList);
+    if (cList && cList.length > 0) {
+      setCategories(cList);
+    }
     setLoading(false);
   };
 
@@ -184,6 +190,7 @@ export function App() {
           {activeTab === "projects" && (
             <ProjectsView
               projects={projects}
+              categories={categories}
               onRefresh={loadAllData}
               searchQuery={searchQuery}
             />
@@ -192,6 +199,7 @@ export function App() {
           {activeTab === "gallery" && (
             <GalleryView
               gallery={gallery}
+              categories={categories}
               onRefresh={loadAllData}
               searchQuery={searchQuery}
             />
@@ -214,7 +222,10 @@ export function App() {
           )}
 
           {activeTab === "categories" && (
-            <CategoriesView />
+            <CategoriesView
+              categories={categories}
+              onCategoriesChange={(newCats) => setCategories(newCats)}
+            />
           )}
         </main>
       </div>

@@ -8,9 +8,11 @@ import type { ProjectItem } from "../types";
 import { createProject, updateProject, deleteProject, uploadMediaFile } from "../services/api";
 import { toast } from "sonner";
 import { getStoredCategories } from "./CategoriesView";
+import { PremiumCategorySelect } from "./PremiumCategorySelect";
 
 interface ProjectsViewProps {
   projects: ProjectItem[];
+  categories?: string[];
   onRefresh: () => void;
   searchQuery: string;
 }
@@ -44,15 +46,22 @@ const labelStyle = {
   letterSpacing: "0.05em",
 };
 
-export const ProjectsView: React.FC<ProjectsViewProps> = ({ projects, onRefresh, searchQuery }) => {
-  const dynamicCategories = getStoredCategories();
+export const ProjectsView: React.FC<ProjectsViewProps> = ({ projects, categories: propCategories, onRefresh, searchQuery }) => {
+  const [addedCats, setAddedCats] = useState<string[]>([]);
+  const dynamicCategories = Array.from(
+    new Set([
+      ...(propCategories || getStoredCategories()),
+      ...addedCats,
+      ...projects.map((p) => p.category).filter(Boolean),
+    ])
+  );
   const CATEGORIES = ["All", ...dynamicCategories];
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<ProjectItem | null>(null);
 
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("Residential");
+  const [category, setCategory] = useState(() => dynamicCategories[0] || "Residential");
   const [location, setLocation] = useState("");
   const [imageMode, setImageMode] = useState<"url" | "file">("url");
   const [imageUrl, setImageUrl] = useState("");
@@ -345,13 +354,15 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ projects, onRefresh,
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
-                      <label style={labelStyle}>Category</label>
-                      <select value={category} onChange={(e) => setCategory(e.target.value)}
-                        style={{ ...inputStyle, cursor: "pointer" }} onFocus={focusInput} onBlur={blurInput}>
-                        {dynamicCategories.map((cat) => (
-                          <option key={cat} value={cat}>{cat}</option>
-                        ))}
-                      </select>
+                      <PremiumCategorySelect
+                        label="Category"
+                        categories={dynamicCategories}
+                        selectedCategory={category}
+                        onSelectCategory={setCategory}
+                        onAddNewCategory={(newCat) => {
+                          setAddedCats((prev) => Array.from(new Set([...prev, newCat])));
+                        }}
+                      />
                     </div>
                     <div>
                       <label style={labelStyle}>Location</label>
