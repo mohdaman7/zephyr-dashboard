@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Tag, Plus, Trash2, Edit3, Check, X, GripVertical, FolderOpen, AlertTriangle } from "lucide-react";
+import { Tag, Plus, Trash2, Edit3, Check, X, GripVertical, FolderOpen, AlertTriangle, Cloud } from "lucide-react";
 import { toast } from "sonner";
+import { fetchCategories, createCategory, deleteCategory } from "../services/api";
 
 const STORAGE_KEY = "zephyr_categories";
 const DEFAULT_CATEGORIES = ["Residential", "Commercial", "Interior", "Landscape"];
@@ -55,19 +56,29 @@ export const CategoriesView: React.FC = () => {
   const [deleteConfirmIndex, setDeleteConfirmIndex] = useState<number | null>(null);
   const [newInputFocused, setNewInputFocused] = useState(false);
 
-  const persist = (updated: string[]) => {
+  useEffect(() => {
+    fetchCategories().then((serverCats) => {
+      if (serverCats && serverCats.length > 0) {
+        setCategories(serverCats);
+        saveCategories(serverCats);
+      }
+    });
+  }, []);
+
+  const persist = async (updated: string[]) => {
     setCategories(updated);
     saveCategories(updated);
   };
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     const trimmed = newCat.trim();
     if (!trimmed) { toast.error("Category name cannot be empty."); return; }
     if (categories.map((c) => c.toLowerCase()).includes(trimmed.toLowerCase())) {
       toast.error(`"${trimmed}" already exists.`); return;
     }
     const updated = [...categories, trimmed];
-    persist(updated);
+    await persist(updated);
+    createCategory(trimmed);
     setNewCat("");
     toast.success(`Category "${trimmed}" added!`);
   };
@@ -78,8 +89,9 @@ export const CategoriesView: React.FC = () => {
     setDeleteConfirmIndex(null);
   };
 
-  const handleSaveEdit = (index: number) => {
+  const handleSaveEdit = async (index: number) => {
     const trimmed = editValue.trim();
+    const oldCat = categories[index];
     if (!trimmed) { toast.error("Category name cannot be empty."); return; }
     if (
       categories
@@ -91,21 +103,25 @@ export const CategoriesView: React.FC = () => {
     }
     const updated = [...categories];
     updated[index] = trimmed;
-    persist(updated);
+    await persist(updated);
+    deleteCategory(oldCat);
+    createCategory(trimmed);
     setEditingIndex(null);
     toast.success(`Category renamed to "${trimmed}".`);
   };
 
-  const handleDelete = (index: number) => {
+  const handleDelete = async (index: number) => {
+    const oldCat = categories[index];
     const updated = categories.filter((_, i) => i !== index);
-    persist(updated);
+    await persist(updated);
+    deleteCategory(oldCat);
     setDeleteConfirmIndex(null);
-    toast.success(`Category "${categories[index]}" deleted.`);
+    toast.success(`Category "${oldCat}" deleted.`);
   };
 
-  const handleReset = () => {
+  const handleReset = async () => {
     if (!confirm("Reset all categories to default? This cannot be undone.")) return;
-    persist([...DEFAULT_CATEGORIES]);
+    await persist([...DEFAULT_CATEGORIES]);
     toast.success("Categories reset to defaults.");
   };
 
