@@ -37,6 +37,17 @@ export function App() {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const handleAddNewCategory = (newCat: string) => {
+    const trimmed = newCat.trim();
+    if (!trimmed) return;
+    setCategories((prev) => {
+      if (prev.some((c) => c.toLowerCase() === trimmed.toLowerCase())) return prev;
+      const updated = [...prev, trimmed];
+      localStorage.setItem("zephyr_categories", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   const loadAllData = async () => {
     setLoading(true);
     const health = await checkBackendHealth();
@@ -54,9 +65,25 @@ export function App() {
     setGallery(gList);
     setVideos(vList);
     setServices(sList);
-    if (cList && cList.length > 0) {
-      setCategories(cList);
+
+    // Merge categories from all sources (localStorage, server /api/categories, projects, gallery)
+    const stored = getStoredCategories();
+    const projectCats = pList.map((p) => p.category).filter(Boolean);
+    const galleryCats = gList.map((g) => g.category).filter(Boolean);
+    const serverCats = cList && cList.length > 0 ? cList : [];
+
+    const allUniqueCats: string[] = [];
+    const seen = new Set<string>();
+    for (const cat of [...stored, ...serverCats, ...projectCats, ...galleryCats]) {
+      const trimmed = cat.trim();
+      if (trimmed && !seen.has(trimmed.toLowerCase())) {
+        seen.add(trimmed.toLowerCase());
+        allUniqueCats.push(trimmed);
+      }
     }
+
+    setCategories(allUniqueCats);
+    localStorage.setItem("zephyr_categories", JSON.stringify(allUniqueCats));
     setLoading(false);
   };
 
@@ -193,6 +220,7 @@ export function App() {
               categories={categories}
               onRefresh={loadAllData}
               searchQuery={searchQuery}
+              onAddNewCategory={handleAddNewCategory}
             />
           )}
 
@@ -202,6 +230,7 @@ export function App() {
               categories={categories}
               onRefresh={loadAllData}
               searchQuery={searchQuery}
+              onAddNewCategory={handleAddNewCategory}
             />
           )}
 

@@ -15,6 +15,7 @@ interface ProjectsViewProps {
   categories?: string[];
   onRefresh: () => void;
   searchQuery: string;
+  onAddNewCategory?: (newCat: string) => void;
 }
 
 
@@ -46,7 +47,13 @@ const labelStyle = {
   letterSpacing: "0.05em",
 };
 
-export const ProjectsView: React.FC<ProjectsViewProps> = ({ projects, categories: propCategories, onRefresh, searchQuery }) => {
+export const ProjectsView: React.FC<ProjectsViewProps> = ({
+  projects,
+  categories: propCategories,
+  onRefresh,
+  searchQuery,
+  onAddNewCategory,
+}) => {
   const [addedCats, setAddedCats] = useState<string[]>([]);
   const dynamicCategories = Array.from(
     new Set([
@@ -115,12 +122,20 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ projects, categories
 
     if (editingProject) {
       const res = await updateProject(editingProject.id, payload);
-      if (res) { toast.success("Project updated!"); onRefresh(); setIsModalOpen(false); }
-      else toast.error("Failed to update project.");
+      if (res) {
+        if (category && onAddNewCategory) onAddNewCategory(category);
+        toast.success("Project updated!");
+        onRefresh();
+        setIsModalOpen(false);
+      } else toast.error("Failed to update project.");
     } else {
       const res = await createProject(payload);
-      if (res) { toast.success("Project created!"); onRefresh(); setIsModalOpen(false); }
-      else toast.error("Failed to create project.");
+      if (res) {
+        if (category && onAddNewCategory) onAddNewCategory(category);
+        toast.success("Project created!");
+        onRefresh();
+        setIsModalOpen(false);
+      } else toast.error("Failed to create project.");
     }
   };
 
@@ -361,6 +376,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ projects, categories
                         onSelectCategory={setCategory}
                         onAddNewCategory={(newCat) => {
                           setAddedCats((prev) => Array.from(new Set([...prev, newCat])));
+                          if (onAddNewCategory) onAddNewCategory(newCat);
                         }}
                       />
                     </div>

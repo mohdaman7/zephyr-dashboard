@@ -14,6 +14,7 @@ interface GalleryViewProps {
   categories?: string[];
   onRefresh: () => void;
   searchQuery: string;
+  onAddNewCategory?: (newCat: string) => void;
 }
 
 
@@ -44,7 +45,13 @@ const labelStyle = {
   letterSpacing: "0.05em",
 };
 
-export const GalleryView: React.FC<GalleryViewProps> = ({ gallery, categories: propCategories, onRefresh, searchQuery }) => {
+export const GalleryView: React.FC<GalleryViewProps> = ({
+  gallery,
+  categories: propCategories,
+  onRefresh,
+  searchQuery,
+  onAddNewCategory,
+}) => {
   const [addedCats, setAddedCats] = useState<string[]>([]);
   const dynamicCategories = Array.from(
     new Set([
@@ -101,12 +108,20 @@ export const GalleryView: React.FC<GalleryViewProps> = ({ gallery, categories: p
 
     if (editingItem) {
       const res = await updateGalleryItem(editingItem.id, { title, category, image: finalImg, description });
-      if (res) { toast.success("Gallery photo updated!"); onRefresh(); setIsModalOpen(false); }
-      else toast.error("Failed to update gallery photo.");
+      if (res) {
+        if (category && onAddNewCategory) onAddNewCategory(category);
+        toast.success("Gallery photo updated!");
+        onRefresh();
+        setIsModalOpen(false);
+      } else toast.error("Failed to update gallery photo.");
     } else {
       const res = await createGalleryItem({ title, category, image: finalImg, description });
-      if (res) { toast.success("New photo added to showcase!"); onRefresh(); setIsModalOpen(false); }
-      else toast.error("Failed to add photo.");
+      if (res) {
+        if (category && onAddNewCategory) onAddNewCategory(category);
+        toast.success("New photo added to showcase!");
+        onRefresh();
+        setIsModalOpen(false);
+      } else toast.error("Failed to add photo.");
     }
   };
 
@@ -328,6 +343,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({ gallery, categories: p
                       onSelectCategory={setCategory}
                       onAddNewCategory={(newCat) => {
                         setAddedCats((prev) => Array.from(new Set([...prev, newCat])));
+                        if (onAddNewCategory) onAddNewCategory(newCat);
                       }}
                     />
                   </div>

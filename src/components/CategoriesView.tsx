@@ -73,9 +73,20 @@ export const CategoriesView: React.FC<CategoriesViewProps> = ({
   useEffect(() => {
     fetchCategories().then((serverCats) => {
       if (serverCats && serverCats.length > 0) {
-        setCategories(serverCats);
-        saveCategories(serverCats);
-        if (onCategoriesChange) onCategoriesChange(serverCats);
+        setCategories((prev) => {
+          const merged: string[] = [];
+          const seen = new Set<string>();
+          for (const cat of [...prev, ...serverCats]) {
+            const trimmed = cat.trim();
+            if (trimmed && !seen.has(trimmed.toLowerCase())) {
+              seen.add(trimmed.toLowerCase());
+              merged.push(trimmed);
+            }
+          }
+          saveCategories(merged);
+          if (onCategoriesChange) onCategoriesChange(merged);
+          return merged;
+        });
       }
     });
   }, []);
